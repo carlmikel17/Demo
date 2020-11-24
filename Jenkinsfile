@@ -1,29 +1,36 @@
-pipeline {
-    agent any 
+def gv
+  pipeline {
+    agent any
     parameters {
-        choice(name: 'VERSION', choices: ['1.1.0', '1.2.0'], description: '')
-        booleanParam(name: 'EXECUTE_TEST', defaultValue: true, description: '')
+    	choice(name: 'VERSION', choices: ['1.1.0', '1.2.0'], description: '')
+    	booleanParam(name: 'executeTest', defaultValue: true, description: '')
     }
+
     stages {
-        stage('Build') { 
+    	stage('Init') { // used to initialized a groovy script 
             steps {
-                echo "Building the application with Build#: ${BUILD_ID}"
+            	script {
+            		gv = load "script.groovy"
+            	}
             }
         }
-        stage('Test') { 
-            when {
-               	expression {
-               		BRANCH_NAME  == 'master' && params.EXECUTE_TEST == true
-               	}
+        stage('Build') { 
+            steps {
+            	script {
+            		gv.buildApp()
+            	}
             }
-            steps
-            {
-                echo "Testting the application on ${BRANCH_NAME}..."
-            }
+        }
+        stage('test') { 
+            	script {
+            		gv.testApp()
+            	}
         }
         stage('Deploy') { 
             steps {
-                echo "Deploying the application..."
+            	script {
+            		gv.deployApp()
+            	}
             }
         }
     }
