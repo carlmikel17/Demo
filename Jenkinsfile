@@ -1,5 +1,9 @@
 pipeline {
     agent any 
+    parameters {
+        choice(name: 'VERSION', choices: ['1.1.0', '1.2.0'], description: '')
+        booleanParam(name: 'EXECUTE_TEST', defaultValue: true, description: '')
+    }
     stages {
         stage('Build') { 
             steps {
@@ -9,7 +13,7 @@ pipeline {
         stage('Test') { 
             when {
                	expression {
-               		${BRANCH_NAME}  == 'dev' || ${BRANCH_NAME}  == 'master'
+               		BRANCH_NAME  == 'master' && params.EXECUTE_TEST == true
                	}
             }
             steps
