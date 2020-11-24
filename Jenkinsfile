@@ -7,9 +7,7 @@
     stages {
         stage('Deploy') { 
             steps {
-                withCredentials([
-                	usernamePassword(credentials: 'OP', usernameVariable: USER, passwordVariable: PWD)
-                ]) {
+                withCredentials([usernamePassword(credentials: 'OP', usernameVariable: USER, passwordVariable: PWD)]) {
                 		echo "username ${USER} password ${PWD}"
                 }
             }
