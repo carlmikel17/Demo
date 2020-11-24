@@ -1,36 +1,17 @@
-def gv
-  pipeline {
+    pipeline {
     agent any
-    parameters {
-    	choice(name: 'VERSION', choices: ['1.1.0', '1.2.0'], description: '')
-    	booleanParam(name: 'executeTest', defaultValue: true, description: '')
+    enviroment {
+    	NEW_VERSION = '1.2.0'
+    	SERVER_CREDENTIALS = credentials('OP') // takes ID REFERENCE
     }
-
     stages {
-    	stage('Init') { // used to initialized a groovy script 
-            steps {
-            	script {
-            		gv = load "script.groovy"
-            	}
-            }
-        }
-        stage('Build') { 
-            steps {
-            	script {
-            		gv.buildApp()
-            	}
-            }
-        }
-        stage('test') { 
-            	steps {
-                echo "Testting the application on ${BRANCH_NAME}..."
-            }
-        }
         stage('Deploy') { 
             steps {
-            	script {
-            		gv.deployApp()
-            	}
+                withCredentials([
+                	usernamePassword(credentials: 'OP', usernameVariable: USER, passwordVariable: PWD)
+                ]) {
+                		echo "username ${USER} password ${PWD}"
+                }
             }
         }
     }
