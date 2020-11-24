@@ -7,16 +7,14 @@ pipeline {
             }
         }
         stage('Test') { 
-            steps {
-                when {
-                	expression {
-                		${BRANCH_NAME}  == 'dev' || ${BRANCH_NAME}  == 'master'
-                	}
-                }
-                steps
-                {
-                    echo "Testting the application..."
-                }
+            when {
+               	expression {
+               		${BRANCH_NAME}  == 'dev' || ${BRANCH_NAME}  == 'master'
+               	}
+            }
+            steps
+            {
+                echo "Testting the application on ${BRANCH_NAME}..."
             }
         }
         stage('Deploy') { 
