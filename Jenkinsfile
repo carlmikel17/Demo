@@ -1,26 +1,41 @@
-    pipeline {
+   def gv
+  pipeline {
     agent any
-    enviroment {
-    	NEW_VERSION = '1.2.0'
-    	SERVER_CREDENTIALS = credentials('OP') // takes ID REFERENCE
+    parameters {
+        choice(name: 'VERSION', choices: ['1.1.0', '1.2.0'], description: '')
+        booleanParam(name: 'executeTest', defaultValue: true, description: '')
     }
-    stages {
-        stage('Deploy') { 
-            steps {
-                   pipeline {
-    agent any
     enviroment {
-    	NEW_VERSION = '1.2.0'
-    	SERVER_CREDENTIALS = credentials('OP') // takes ID REFERENCE
+        NEW_VERSION = '1.2.0'
+        SERVER_CREDENTIALS = credentials('OP') // takes ID REFERENCE
     }
+
     stages {
-        stage('Deploy') { 
+        stage('Init') { // used to initialized a groovy script 
             steps {
-                echo "${SERVER_CREDENTIALS}"
+                script {
+                    gv = load "script.groovy"
+                }
+                echo "${NEW_VERSION}"
             }
         }
-    }
-  }
+        stage('Build') { 
+            steps {
+                script {
+                    gv.buildApp()
+                }
+            }
+        }
+        stage('test') { 
+                script {
+                    gv.testApp()
+                }
+        }
+        stage('Deploy') { 
+            steps {
+                script {
+                    gv.deployApp()
+                }
             }
         }
     }
