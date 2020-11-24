@@ -22,9 +22,9 @@ def gv
             }
         }
         stage('test') { 
-            	script {
-            		gv.testApp()
-            	}
+            	steps {
+                echo "Testting the application on ${BRANCH_NAME}..."
+            }
         }
         stage('Deploy') { 
             steps {
