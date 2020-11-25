@@ -1,4 +1,6 @@
 #!/bin/bash
 for i in {1..30}; do echo $i; sleep 1; done
 
-touch result/log.txt
+mkdir results/logs
+cd results/logs/
+touch logs.txt
